@@ -104,7 +104,6 @@ impl ApubObject for ApubCommunity {
       icon: self.icon.clone().map(ImageObject::new),
       image: self.banner.clone().map(ImageObject::new),
       sensitive: Some(self.nsfw),
-      moderators: attributed_to.clone(),
       inbox: self.inbox_url.clone().into(),
       outbox: ObjectId::new(generate_outbox_url(&self.actor_id)?),
       followers: self.followers_url.clone().into(),
@@ -159,7 +158,7 @@ impl ApubObject for ApubCommunity {
       .map_err(|e| debug!("{}", e))
       .ok();
 
-    if let Some(moderators) = group.attributed_to.or(group.moderators) {
+    if let Some(moderators) = group.attributed_to {
       moderators
         .dereference(&outbox_data, local_instance(context).await, request_counter)
         .await
@@ -242,7 +241,6 @@ pub(crate) mod tests {
   pub(crate) async fn parse_lemmy_community(context: &LemmyContext) -> ApubCommunity {
     let mut json: Group = file_to_json_object("assets/lemmy/objects/group.json").unwrap();
     // change these links so they dont fetch over the network
-    json.moderators = None;
     json.attributed_to = None;
     json.outbox =
       ObjectId::new(Url::parse("https://enterprise.lemmy.ml/c/tenforward/not_outbox").unwrap());

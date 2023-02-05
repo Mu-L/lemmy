@@ -57,8 +57,6 @@ pub struct Group {
   pub(crate) image: Option<ImageObject>,
   // lemmy extension
   pub(crate) sensitive: Option<bool>,
-  // deprecated, use attributed_to instead
-  pub(crate) moderators: Option<ObjectId<ApubCommunityModerators>>,
   #[serde(deserialize_with = "deserialize_skip_error", default)]
   pub(crate) attributed_to: Option<ObjectId<ApubCommunityModerators>>,
   // lemmy extension
